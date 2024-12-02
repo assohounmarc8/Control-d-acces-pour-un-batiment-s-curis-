@@ -1,72 +1,85 @@
-### **Rapport de Projet : Système de Contrôle d'Accès**
+### Rapport de TP : Système de Contrôle d'Accès
 
 #### **Introduction**
 
-Le but de ce projet était de concevoir et développer un **système de contrôle d'accès** permettant de valider l'entrée d'un utilisateur à l'aide d'une **carte** et d'un **code secret**. Le système devait permettre de gérer plusieurs tentatives incorrectes, avec la possibilité d'ajouter des cartes et de modifier les codes associés. Ce rapport décrit les étapes du projet, de la conception initiale à la vérification du système, en passant par la gestion des états et des transitions dans l'automate de contrôle.
+Dans ce travail pratique, l'objectif était de créer un **système de contrôle d'accès** permettant à un utilisateur de valider son accès à l'aide d'une **carte** et d'un **code secret**. Nous avons utilisé plusieurs concepts, tels que la **logique formelle**, les **automates finis** et les **circuits logiques**, pour concevoir un système robuste et fonctionnel. Ce rapport résume les différentes étapes du projet, des spécifications à la vérification finale.
 
 ---
 
 ### **1. Spécifications Initiales**
 
-Les spécifications initiales du projet étaient les suivantes :
-- **Numéro de Carte et Code Secret** : Chaque utilisateur possède une carte avec un numéro unique et un code secret. L'utilisateur doit insérer la carte et saisir le bon code pour accéder à l'espace sécurisé.
-- **Gestion des tentatives incorrectes** : L'utilisateur a droit à **trois tentatives** pour entrer le bon code. Après trois erreurs, l'accès est **bloqué**, et une **alarme** est déclenchée.
-- **Ajout et Modification des Cartes** : Le système doit permettre d'ajouter de nouvelles cartes, ainsi que de modifier le code associé à une carte existante.
-- **Automate de Contrôle** : Le système repose sur un automate qui passe par différentes étapes : attente de carte, vérification du code, accès accordé, accès refusé, et alarme après trois tentatives incorrectes.
+Le système de contrôle d'accès devait permettre à un utilisateur de :
+1. Insérer une carte d'accès.
+2. Entrer un code secret associé à cette carte.
+3. Valider ou refuser l'accès en fonction de la carte et du code.
+
+Les spécifications du système sont les suivantes :
+- Si la **carte** est valide et le **code** est correct, l'accès est **accordé**.
+- Si la **carte** est valide mais le **code** est incorrect, l'accès est **refusé**.
+- Le système devait aussi permettre de **retirer la carte** et de revenir à l'état initial.
+
+Les règles de transition entre les états (attente de carte, vérification du code, accès accordé ou refusé) ont été définies.
 
 ---
 
-### **2. Description du Modèle de l'Automate**
+### **2. Modélisation du Système avec un Automate**
 
-Le **modèle de l'automate** que nous avons utilisé se compose de plusieurs **états** :
-1. **`ATTENTE_CARTE`** : L'utilisateur doit insérer une carte.
-2. **`VERIFICATION_CODE`** : Une fois la carte insérée, le système vérifie si le code saisi est correct.
-3. **`ACCES_ACCORDE`** : Si le code est correct, l'accès est accordé.
-4. **`ACCES_REFUSE`** : Si le code est incorrect, l'accès est refusé et l'utilisateur peut essayer à nouveau.
-5. **`ALARME`** : Après trois tentatives incorrectes, l'alarme se déclenche.
+Pour modéliser ce système, j'ai utilisé un **automate fini déterministe (AFD)** qui permet de représenter les **états** et **transitions** du système. Voici les états de l'automate :
 
-Chaque transition d'état dépend de l'entrée de l'utilisateur : insérer une carte, saisir un code correct ou incorrect, et retirer la carte.
+1. **AttenteCarte** : L'utilisateur doit insérer une carte.
+2. **VerificationCode** : Le système vérifie le code de la carte insérée.
+3. **AccesAccorde** : Si la carte et le code sont corrects, l'accès est accordé.
+4. **AccesRefuse** : Si le code est incorrect, l'accès est refusé.
 
----
-
-### **3. Vérifications et Tests**
-
-Lors de la réalisation de ce projet, plusieurs tests ont été effectués pour vérifier si le système répondait aux spécifications :
-- **Tests d'accès accordé** : Lorsque l'utilisateur insère la bonne carte et le bon code, l'accès est accordé.
-- **Tests de refus d'accès** : Lorsque le code saisi est incorrect, l'accès est refusé, et l'utilisateur a trois tentatives pour entrer le bon code.
-- **Tests de l'alarme** : Si l'utilisateur entre trois fois un code incorrect, l'alarme se déclenche, et l'accès est définitivement refusé.
-- **Ajout et modification des cartes** : Il est possible d'ajouter de nouvelles cartes et de modifier les codes des cartes existantes dans la base de données.
+Les transitions se font selon les actions de l'utilisateur (insertion de la carte, entrée du code). Si le code est incorrect, l'accès est refusé, et si le code est correct, l'accès est accordé.
 
 ---
 
-### **4. Défis Rencontrés et Solutions Apportées**
+### **3. Circuits Logiques**
 
-#### **Défis**
-- **Gestion des tentatives incorrectes** : Un des défis majeurs était de gérer correctement les tentatives incorrectes. Il fallait veiller à ce que l'alarme se déclenche après trois tentatives infructueuses et que l'utilisateur ne puisse plus essayer après cela.
-- **Ajout de cartes** : L'ajout et la modification des cartes nécessitaient un mécanisme pour vérifier que les cartes étaient uniques et que les codes associés étaient valides.
+Les règles du système ont été traduites en **expressions logiques** (algèbre de Boole) pour créer les circuits logiques nécessaires à l'implémentation :
 
-#### **Solutions**
-- **Gestion des erreurs** : Le système a été conçu pour garder une trace des tentatives incorrectes et pour réinitialiser le compteur si l'utilisateur réussissait à entrer le bon code.
-- **Base de données simple** : Une **`HashMap`** a été utilisée pour stocker les cartes et leurs codes. Cela permet d'ajouter, de modifier et de vérifier facilement les cartes.
+- **Accès accordé** : Si la carte est valide et le code est correct, un **ET (AND)** est utilisé pour vérifier ces conditions.
+- **Accès refusé** : Si la carte est valide mais le code est incorrect, un **ET (AND)** combiné avec un **NON (NOT)** est utilisé pour tester cette condition.
 
----
-
-### **5. Conclusion sur l'Efficacité et la Fiabilité du Système**
-
-Ce projet a permis de créer un **système de contrôle d'accès simple et efficace**, qui permet de vérifier si un utilisateur a droit d'accès à un espace sécurisé. Le système répond aux spécifications de base et gère l'insertion de cartes, la vérification des codes, et l'ajout et modification des cartes.
-
-#### **Points forts du système** :
-- **Simplicité** : Le système est simple à comprendre et à utiliser grâce à son interface de commande.
-- **Gestion des erreurs** : La gestion des tentatives incorrectes et de l'alarme permet de sécuriser l'accès.
-- **Extensibilité** : Le système peut facilement être étendu pour intégrer de nouvelles fonctionnalités, comme la gestion des utilisateurs ou l'ajout d'une interface graphique.
-
-#### **Améliorations possibles** :
-- **Sécurité renforcée** : Bien que ce système soit simple et fonctionnel, il pourrait être amélioré avec des **mécanismes de sécurité** plus robustes, comme le cryptage des codes ou l'ajout d'une authentification multifactorielle.
-- **Base de données** : Le stockage des cartes en mémoire est adapté pour un petit projet, mais il serait préférable d'utiliser une base de données pour des applications à grande échelle.
+Les circuits ont été simplifiés à l'aide des **cartes de Karnaugh**, ce qui permet d'optimiser la logique et de réduire le nombre de portes logiques nécessaires.
 
 ---
 
-### **Synthèse**
+### **4. Vérification du Système**
 
-En conclusion, ce projet a permis de concevoir un **système de contrôle d'accès fiable et sécurisé** qui répond aux besoins de base d'un environnement sécurisé. La gestion des cartes et des codes est claire et intuitive, et le système fonctionne comme prévu. Cependant, des améliorations et des optimisations sont possibles, notamment au niveau de la sécurité et de la gestion des données.
+Après avoir conçu l'automate et les circuits, nous avons vérifié leur bon fonctionnement à l'aide de tests formels. Le but était de nous assurer que toutes les transitions d'état se produisent correctement et que le système respecte les règles de sécurité. 
 
+La vérification a été effectuée à l'aide de la logique formelle pour simuler les différents scénarios (carte valide, code correct, carte invalide, tentatives incorrectes).
+
+---
+
+### **5. Défis Rencontrés et Solutions**
+
+#### **Défis rencontrés** :
+- **Gestion des erreurs** : Au début, la gestion des erreurs (tentatives incorrectes) était un peu complexe. Cependant, j'ai choisi de simplifier cette partie en supprimant la gestion des tentatives incorrectes et en me concentrant uniquement sur la validation du code une fois la carte insérée.
+  
+- **Validation des transitions d'état** : Assurer que les transitions d'un état à l'autre étaient bien définies et fonctionnaient comme prévu a pris un certain temps. Heureusement, l'utilisation d'un automate a facilité la gestion des transitions.
+
+#### **Solutions apportées** :
+- J'ai simplifié la gestion des erreurs en enlevant la gestion des tentatives incorrectes et en me concentrant sur l'accès accordé ou refusé uniquement en fonction du code.
+  
+- Pour les transitions d'état, j'ai utilisé des **outils de model checking** (en logique formelle) pour valider les règles du système et m'assurer que les transitions respectaient les spécifications.
+
+---
+
+### **6. Conclusion**
+
+Le projet a permis de concevoir un **système de contrôle d'accès** simple mais efficace. En utilisant des automates et des circuits logiques, nous avons pu modéliser le système de manière formelle et optimiser les performances à l'aide de l'algèbre de Boole. Le système est désormais capable de vérifier l'accès en fonction de la carte et du code, et offre une gestion fluide des erreurs avec un accès accordé ou refusé.
+
+Ce travail m'a permis de mieux comprendre comment utiliser les **automates finis**, la **logique formelle** et les **circuits logiques** pour modéliser des systèmes réels. Grâce à cette approche formelle, nous avons pu garantir que le système respecte les règles de sécurité tout en étant efficace.
+
+---
+
+### **Améliorations futures**
+
+- Ajouter la gestion des **tentatives incorrectes** pour renforcer la sécurité.
+- Permettre l'intégration de **cartes multiples** pour un même utilisateur.
+- Intégrer un **système de stockage persistant** pour les cartes et les codes, afin de les enregistrer au-delà de la session.
+
+En résumé, le système est fonctionnel et respecte les spécifications, mais il pourrait être amélioré en ajoutant des fonctionnalités supplémentaires pour le rendre plus robuste et sécurisé.
